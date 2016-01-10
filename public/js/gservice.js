@@ -8,9 +8,7 @@ angular.module('gservice', [])
         var googleMapService = {};
         googleMapService.clickLat  = 0;
         googleMapService.clickLong = 0;
-		var map = new google.maps.Map(document.getElementById('map'), {
-					 zoom: 3
-				});		
+	
         // Variables we'll use to help us pan to the right spot
         var lastMarker;
         var currentSelectedMarker;
@@ -91,6 +89,12 @@ angular.module('gservice', [])
             else{
                 icon = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
             }
+			if(!map){
+			var map = new google.maps.Map(document.getElementById('map'), {
+				 zoom: 15
+			});	
+			}
+			
 			loadGeoJsontoMap(map,data,latitude,longitude);
             // Function for moving to a selected location
             map.panTo(new google.maps.LatLng(latitude, longitude));
