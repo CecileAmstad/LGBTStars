@@ -31,7 +31,11 @@ module.exports = function(app) {
         });
     });
 	
-	app.get('/specific', function(req, res){
+	/*
+		Brings the aggregate user rating for a given place based on some logic and renders the response in geojson format
+		to ease the loading of Points using google map.
+	*/
+	app.get('/userRatings', function(req, res){
 	User.aggregate(
 		{ "$group" : { "_id" : {coordinates : "$featureCollections.geometry.coordinates", rating : "$featureCollections.properties.rating"},total: { $sum: 1 } }},
 		{ "$group" : { "_id" : "$_id.coordinates", children:{$addToSet :{rating : "$_id.rating",total: "$total" }}}}

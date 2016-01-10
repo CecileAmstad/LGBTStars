@@ -6,7 +6,7 @@
 
         <!-- Panel Title -->
         <div class="panel-heading">
-            <h2 class="panel-title text-center">Join the Scotch Team! <span class="glyphicon glyphicon-map-marker"></span></h2>
+            <h2 class="panel-title text-center">Select a place on map and rate<span class="glyphicon glyphicon-map-marker"></span></h2>
         </div>
 
         <!-- Panel Body -->
@@ -20,26 +20,7 @@
                     <label for="username">Username <span class="badge">All fields required</span></label>
                     <input type="text" class="form-control" id="username" placeholder="OldandGold" ng-model="formData.username" required>
                 </div>
-                <label class="radio control-label">Gender</label>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="optionsRadios" id="radiomale" value="Male" ng-model="formData.gender">
-                        Male
-                    </label>
-                </div>
-                <div class="radio" required>
-                    <label>
-                        <input type="radio" name="optionsRadios" id="radiofemale" value="Female" ng-model="formData.gender">
-                        Female
-                    </label>
-                </div>
-                <div class="radio">
-                    <label>
-                        <input type="radio" name="optionsRadios" id="radioother" value="What's it to ya?" ng-model="formData.gender">
-                        What's it to ya?
-                    </label>
-                </div>
-				
+               			
 				<div class="infoWindowPopup">
 				  <table>
 					<tr>
@@ -67,12 +48,12 @@
 				  </table>
 				</div>
                 <div class="form-group">
-                    <label for="age">Age</label>
-                    <input type="number" class="form-control" id="age" placeholder="72" ng-model="formData.age" required>
+                    <label for="language">Place Name</label>
+                    <input type="text" class="form-control" id="language" placeholder="Name of the place" ng-model="formData.placeName" required>
                 </div>
                 <div class="form-group">
-                    <label for="language">Favorite Language</label>
-                    <input type="text" class="form-control" id="language" placeholder="Fortran" ng-model="formData.favlang" required>
+                    <label for="language">Remark</label>
+                    <input type="text" class="form-control" id="language" placeholder="Comma separated adjectives" ng-model="formData.remark" required>
                 </div>
                 <div class="form-group">
                     <label for="latitude">Latitude</label>
@@ -81,11 +62,6 @@
                 <div class="form-group">
                     <label for="longitude">Longitude</label>
                     <input type="text" class="form-control" id="longitude" value="-98.350" ng-model="formData.longitude" readonly>
-                </div>
-                <div class="form-group">
-                    <!-- Note RefreshLoc button tied to addCtrl. This requests a refresh of the HTML5 verified location. -->
-                    <label for="verified">HTML5 Verified Location? <span><button ng-click="refreshLoc()" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-refresh"></span></button></span></label>
-                    <input type="text" class="form-control" id="verified" placeholder= "Nope (Thanks for spamming my map...)" ng-model="formData.htmlverified" readonly>
                 </div>
 
                 <!-- Submit button. Note that its tied to createUser() function from addCtrl. Also note ng-disabled logic which prevents early submits.  -->

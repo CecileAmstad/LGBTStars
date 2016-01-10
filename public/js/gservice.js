@@ -8,29 +8,22 @@ angular.module('gservice', [])
         var googleMapService = {};
         googleMapService.clickLat  = 0;
         googleMapService.clickLong = 0;
-
-        // Array of locations obtained from API calls
-        var locations = [];
-
+		var map = new google.maps.Map(document.getElementById('map'), {
+					 zoom: 3
+				});		
         // Variables we'll use to help us pan to the right spot
         var lastMarker;
         var currentSelectedMarker;
 
-        // User Selected Location (initialize to center of America)
+        // User Selected Location
         var selectedLat = 39.50;
         var selectedLong = -98.35;
-		var myLatLng = {lat: selectedLat, lng: selectedLong};
         // Create a new map and place in the index.html page
-        var map = new google.maps.Map(document.getElementById('map'), {
-                 zoom: 3
-            });
+
         // Functions
         // --------------------------------------------------------------
         // Refresh the Map with new data. Takes three parameters (lat, long, and filtering results)
         googleMapService.refresh = function(latitude, longitude, filteredResults){
-
-            // Clears the holding array of locations
-            locations = [];
 
             // Set the selected lat and long equal to the ones provided on the refresh() call
             selectedLat = latitude;
@@ -38,25 +31,18 @@ angular.module('gservice', [])
 
             // If filtered results are provided in the refresh() call...
             if (filteredResults){
-
-                // Then convert the filtered results into map points.
-                locations = convertToMapPoints(filteredResults);
-
                 // Then, initialize the map -- noting that a filter was used (to mark icons yellow)
-                initialize(latitude, longitude, true);
+                initialize(latitude, longitude, filteredResults,true);
+
             }
 
             // If no filter is provided in the refresh() call...
             else {
 
                 // Perform an AJAX call to get all of the records in the db.
-                $http.get('/specific').success(function(response){
-					map.data.addGeoJson(response);
-                    // Then convert the results into map points
-                    locations = convertToMapPoints(response);
-
+                $http.get('/userRatings').success(function(response){
                     // Then initialize the map -- noting that no filter was used.
-                    initialize(latitude, longitude, false);
+                    initialize(latitude, longitude,response, false);
                 }).error(function(){});
             }
         };
@@ -65,20 +51,8 @@ angular.module('gservice', [])
         // --------------------------------------------------------------
 
         // Convert a JSON of users into map points
-        var convertToMapPoints = function(response,latitude, longitude){
-
-            // Clear the locations holder
-            var locations = [];
-
-            // Loop through all of the JSON entries provided in the response
-            for(var i= 0; i < response.length; i++) {
-                var user = response[i];
-				var featureCollection = { type : "FeatureCollection",features : user.featureCollections};
-				var geojson = user.featureCollections;
-				console.log(featureCollection);
-				map.data.addGeoJson(featureCollection);
-                // Create popup windows for each record
-            }
+        var loadGeoJsontoMap = function(map,response,latitude, longitude){
+			map.data.addGeoJson(response);
 			map.data.setStyle(function(feature) {
 			var rating = feature.getProperty('rating');
 			  if(rating=== "1"){
@@ -101,30 +75,14 @@ angular.module('gservice', [])
 				return {
 			icon: 'https://df44a25e6aacb3ed7dde05be7a450c2c91773ba0.googledrive.com/host/0B4VqM7PW3xn8LVBXWGhwSXZQeW8/Startinydead.png',
 				};
+			  }else {
+			  return {icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'};
 			  }
-});
-            // location is now an array populated with records in Google Maps format
-            return locations;
+			});
         };
-
-        // Constructor for generic location
-        var Location = function(latlon, message, username, gender, age, favlang){
-            this.latlon = latlon;
-            this.message = message;
-            this.username = username;
-            this.gender = gender;
-            this.age = age;
-            this.favlang = favlang
-        };
-
+		
         // Initializes the map
-        var initialize = function(latitude, longitude, filter) {
-
-            // Uses the selected lat, long as starting point
-            var myLatLng = {lat: selectedLat, lng: selectedLong};
-
-            // If map has not been created...
-            
+        var initialize = function(latitude, longitude,data, filter) {    
 
             // If a filter was used set the icons yellow, otherwise blue
             if(filter){
@@ -133,35 +91,7 @@ angular.module('gservice', [])
             else{
                 icon = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
             }
-
-            // Loop through each location in the array and place a marker
-           /* locations.forEach(function(n, i){
-               var marker = new google.maps.Marker({
-                   position: n.latlon,
-                   map: map,
-                   title: "Big Map",
-                   icon: icon,
-               });
-
-                // For each marker created, add a listener that checks for clicks
-                google.maps.event.addListener(marker, 'click', function(e){
-
-                    // When clicked, open the selected marker's message
-                    currentSelectedMarker = n;
-                    n.message.open(map, marker);
-                });
-            }); */
-
-            // Set initial location as a bouncing red marker
-            var initialLocation = new google.maps.LatLng(latitude, longitude);
-            var marker = new google.maps.Marker({
-                position: initialLocation,
-                animation: google.maps.Animation.BOUNCE,
-                map: map,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-            });
-            lastMarker = marker;
-
+			loadGeoJsontoMap(map,data,latitude,longitude);
             // Function for moving to a selected location
             map.panTo(new google.maps.LatLng(latitude, longitude));
 

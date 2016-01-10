@@ -21,11 +21,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
         coords = {lat:data.coords.latitude, long:data.coords.longitude};
 
         // Display coordinates in location textboxes rounded to three decimal points
-        $scope.formData.longitude = parseFloat(coords.long).toFixed(3);
-        $scope.formData.latitude = parseFloat(coords.lat).toFixed(3);
-
-        // Display message confirming that the coordinates verified.
-        $scope.formData.htmlverified = "Yep (Thanks for giving us real data!)";
+        $scope.formData.longitude = coords.long;
+        $scope.formData.latitude = coords.lat;
 
         gservice.refresh($scope.formData.latitude, $scope.formData.longitude);
 
@@ -39,9 +36,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
 
         // Run the gservice functions associated with identifying coordinates
         $scope.$apply(function(){
-            $scope.formData.latitude = parseFloat(gservice.clickLat).toFixed(3);
-            $scope.formData.longitude = parseFloat(gservice.clickLong).toFixed(3);
-            $scope.formData.htmlverified = "Nope (Thanks for spamming my map...)";
+            $scope.formData.latitude = gservice.clickLat;
+            $scope.formData.longitude = gservice.clickLong;
         });
     });
 
@@ -50,9 +46,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
         geolocation.getLocation().then(function(data){
             coords = {lat:data.coords.latitude, long:data.coords.longitude};
 
-            $scope.formData.longitude = parseFloat(coords.long).toFixed(3);
-            $scope.formData.latitude = parseFloat(coords.lat).toFixed(3);
-            $scope.formData.htmlverified = "Yep (Thanks for giving us real data!)";
+            $scope.formData.longitude = coords.long;
+            $scope.formData.latitude = coords.lat;
             gservice.refresh(coords.lat, coords.long);
         });
     };
@@ -63,19 +58,16 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
 
 	
 	var rating = $scope.formData.rating;
+	var remark = $scope.formData.remark;
         // Grabs all of the text box fields
         var userData = {
 		featureCollections :[{
 			type: 'Feature',
 			geometry: { "type": "Point",
 						coordinates: [ $scope.formData.longitude, $scope.formData.latitude ] },
-			properties: {rating }}],
+			properties: {rating, remark }}],
             username: $scope.formData.username,
-            gender: $scope.formData.gender,
-            age: $scope.formData.age,
-            favlang: $scope.formData.favlang,
-            location: [$scope.formData.longitude, $scope.formData.latitude],
-            htmlverified: $scope.formData.htmlverified
+            location: [$scope.formData.longitude, $scope.formData.latitude]
         };
 
         // Saves the user data to the db
@@ -84,14 +76,11 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
 
                 // Once complete, clear the form (except location)
                 $scope.formData.username = "";
-                $scope.formData.gender = "";
-                $scope.formData.age = "";
-                $scope.formData.favlang = "";
-
-                // Refresh the map with new data
+               // Refresh the map with new data
                 gservice.refresh($scope.formData.latitude, $scope.formData.longitude);
             })
             .error(function (data) {
+				//TODO Error handling convert exceptions into user friendly message
                 console.log('Error: ' + data);
             });
     };
