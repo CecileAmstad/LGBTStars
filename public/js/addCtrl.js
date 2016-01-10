@@ -21,8 +21,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
         coords = {lat:data.coords.latitude, long:data.coords.longitude};
 
         // Display coordinates in location textboxes rounded to three decimal points
-        $scope.formData.longitude = coords.long;
-        $scope.formData.latitude = coords.lat;
+        $scope.formData.longitude = parseFloat(coords.long).toFixed(3);
+        $scope.formData.latitude = parseFloat(coords.lat).toFixed(3);
 
         gservice.refresh($scope.formData.latitude, $scope.formData.longitude);
 
@@ -36,8 +36,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
 
         // Run the gservice functions associated with identifying coordinates
         $scope.$apply(function(){
-            $scope.formData.latitude = gservice.clickLat;
-            $scope.formData.longitude = gservice.clickLong;
+            $scope.formData.latitude = parseFloat(gservice.clickLat).toFixed(3);
+            $scope.formData.longitude = parseFloat(gservice.clickLong).toFixed(3);
         });
     });
 
@@ -46,8 +46,8 @@ addCtrl.controller('addCtrl', function($scope, $http, $rootScope, geolocation, g
         geolocation.getLocation().then(function(data){
             coords = {lat:data.coords.latitude, long:data.coords.longitude};
 
-            $scope.formData.longitude = coords.long;
-            $scope.formData.latitude = coords.lat;
+        $scope.formData.longitude = parseFloat(coords.long).toFixed(3);
+        $scope.formData.latitude = parseFloat(coords.lat).toFixed(3);
             gservice.refresh(coords.lat, coords.long);
         });
     };

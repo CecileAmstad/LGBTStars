@@ -89,7 +89,7 @@ module.exports = function(app) {
 							});
 							console.log('Sad score : ' + sadScore)
 							if(sadScore > 0){
-								feature.properties.rating = ratingCount["3"] > ratingCount["4"] ? ratingCount["3"] :ratingCount["4"]; 
+								feature.properties.rating = ratingCount["3"] > ratingCount["4"] ? "3" : "4"; 
 							}else{
 								feature.properties.rating = "5";
 							}
