@@ -9,7 +9,7 @@ This app is currently build on top of Mean Stack `mean.io`. In future I am think
 1) Clone repository and download npm packages 
 
 ```
-git clone URLHERE
+git clone https://github.com/himanshu810e/LGBTStars.git
 npm install
 ```
 
